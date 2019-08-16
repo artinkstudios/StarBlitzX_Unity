@@ -1,0 +1,2 @@
+god_hammer_flame_animation.png,146,176,3
+god_hammer_laser_fire.png,53,60,1

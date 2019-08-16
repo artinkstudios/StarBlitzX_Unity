@@ -1,0 +1,5 @@
+gargon_spaceship_animation.png,170,303,3
+enemy_ship_explosion.png,300,420,6
+gargon_spaceship_animation_half_turn.png,170,303,3
+gargon_spaceship_animation_full_turn.png,170,303,3
+gargon_spaceship_animation_9o_clock_turn.png,170,303,3
