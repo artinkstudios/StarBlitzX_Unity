@@ -24,5 +24,6 @@ public class MissileManager : MonoBehaviour {
 
 	void OnDestroy(){
 		MissileAudio.PlayOneShot (MissileDestroyed);
-	}
+        Camera.main.GetComponent<GameManager>().RemoveAsteroid(gameObject);
+    }
 }

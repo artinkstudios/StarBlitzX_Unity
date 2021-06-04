@@ -1,24 +1,46 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 
 public class EarthManager : MonoBehaviour {
 
+	public ScreenShake ShakeScript;
 	public bool enableGameOver;
-	public Material[] HitMaterials;
-	private Material DefaultMaterial;
+	public Material[] ComputerHitMaterials;
+    public Material[] MobileHitMaterials;
+    private Material[] HitMaterials;
+    public Material ComputerDefaultMaterial;
+    public Material MobileDefaultMaterial;
+    private Material DefaultMaterial;
 	private int CurrentMaterial = 0;
 	public AudioClip EarthHit;
 	private AudioSource EarthSource;
 	public GameObject SmallAsteroidExplosion;
 	public GameObject BigAsteroidExplosion;
 	public GameObject EarthCrack;
-	// Use this for initialization
-	void Start () {
-		CurrentMaterial = 0;
-		DefaultMaterial = GetComponent<Renderer> ().material;
+	public float flashLength = 1;
+	private float flashingTime = 0;
+    public EarthHitAnimationScript HitAnimation;
+    public GameObject Shield;
+    public GameObject ShotShield;
+    private float ShieldTime = 0;
+
+    // Use this for initialization
+    void Start () {
+#if UNITY_STANDALONE
+        DefaultMaterial = ComputerDefaultMaterial;
+        HitMaterials = ComputerHitMaterials;
+#endif
+#if UNITY_ANDROID || UNITY_IOS
+        DefaultMaterial = MobileDefaultMaterial;
+        HitMaterials = MobileHitMaterials;
+#endif
+        CurrentMaterial = 0;
+        GetComponent<Renderer>().material = DefaultMaterial;
 		EarthSource = GetComponent<AudioSource> ();
+        //Shield = transform.Find("Earth Deflector Shield").gameObject;
 
 		if (ApplicationValues.EarthHealth < 10) {
 			CurrentMaterial = 9 - ApplicationValues.EarthHealth;
@@ -28,21 +50,45 @@ public class EarthManager : MonoBehaviour {
 	}
 
 	void Update () {
-		
+		if (flashingTime < 0) {
+			flashingTime = 0;
+			GetComponent<Renderer> ().material.color = Color.white;
+		} else if (flashingTime > 0) {
+			flashingTime -= Time.deltaTime;
+		}
+        if (ShieldTime > 0)
+        {
+            ShieldTime -= Time.deltaTime;
+            if (ShieldTime <= 0)
+            {
+                Shield.SetActive(false);
+            }
+        }
 	}
 
 	void OnCollisionEnter(Collision other) {
 		ApplicationValues.EarthHealth--;
 		EarthSource.PlayOneShot (EarthHit);
+        HitAnimation.EarthHit();
 		GameObject aster = other.gameObject;
 		bool big = aster.GetComponent<AsteroidManager> ().isBig;
 
-		if (CurrentMaterial < 10) {
+        if (enableGameOver && ApplicationValues.EarthHealth <= 0)
+        {
+            EarthSource.Play();
+            //earth explosion
+            Camera.main.GetComponent<GameManager>().StartGameOver();
+        }
+
+        if (CurrentMaterial < 10) {
 			GetComponent<Renderer> ().material = HitMaterials [CurrentMaterial];
 			CurrentMaterial++;
+			GetComponent<Renderer> ().material.color = Color.red;
+			flashingTime = flashLength;
 		}
 
-		if (aster.GetComponent<AsteroidManager> ().type.CompareTo ("phantom") == 0) {
+		if (aster.GetComponent<AsteroidManager> ().type.CompareTo ("phantom") == 0 || aster.GetComponent<AsteroidManager>().type.CompareTo("fire") == 0) {
+			ShakeScript.shakeDuration = 1;
 			Destroy (other.transform.parent.gameObject);
 			GameObject ex = Instantiate(BigAsteroidExplosion, other.transform.position, other.transform.rotation);
 			ex.GetComponent<ParticleSystem> ().Play ();
@@ -50,11 +96,13 @@ public class EarthManager : MonoBehaviour {
 		} else {
 			if (big) {
 				//big asteroid explosion
+				ShakeScript.shakeDuration = 0.8f;
 				GameObject ex = Instantiate(BigAsteroidExplosion, other.transform.position, other.transform.rotation);
 				ex.GetComponent<ParticleSystem> ().Play ();
 				Destroy (ex, ex.GetComponent<ParticleSystem> ().main.duration);
 			} else {
 				//small asteroid explosion
+				ShakeScript.shakeDuration = 0.3f;
 				GameObject ex = Instantiate(SmallAsteroidExplosion, other.transform.position, other.transform.rotation);
 				ex.GetComponent<ParticleSystem> ().Play ();
 				Destroy (ex, ex.GetComponent<ParticleSystem> ().main.duration);
@@ -79,13 +127,23 @@ public class EarthManager : MonoBehaviour {
 			//ec.transform.localScale += (new Vector3 (-0.3f, -0.3f, -0.3f));
 			ec.transform.localScale.Scale (new Vector3 (0.8f, 0.8f, 0.8f));
 		}
-			
-		if (enableGameOver && ApplicationValues.EarthHealth <= 0) {
-			EarthSource.Play ();
-			//earth explosion
-			Camera.main.GetComponent<GameManager>().StartGameOver();
-		}
 	}
+
+    public void ShotHit(RaycastHit hit)
+    {
+        /*GameObject ec = Instantiate(ShotShield, hit.point, hit.transform.rotation);
+        ec.GetComponentInChildren<ParticleSystem>().Play();*/
+        /*if (ShieldTime > 0)
+        {
+            ShieldTime = 1;
+        } else
+        {
+            ShieldTime = 1;
+            Shield.SetActive(true);
+        }*/
+        //Shield.GetComponent<ShieldEffect>().Add(hit.point, 50, 0.1f, 2, 4);
+        Shield.GetComponent<SpotShieldEffect>().Add(hit.point);
+    }
 
 	public void SetEarthHit(int health){
 		ApplicationValues.EarthHealth = health;
@@ -97,6 +155,10 @@ public class EarthManager : MonoBehaviour {
 			CurrentMaterial = 0;
 			GetComponent<Renderer> ().material = DefaultMaterial;
 		}
-
-	}
+        HitAnimation.EarthHit();
+    }
+    public void Mute()
+    {
+        HitAnimation.Mute();
+    }
 }

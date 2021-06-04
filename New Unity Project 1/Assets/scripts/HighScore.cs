@@ -21,7 +21,24 @@ public class HighScore {
 			Initials [i, 1] = ' ';
 			Initials [i, 2] = ' ';
 		}
-	}
+
+        SetScore(0, 80000);
+        SetScore(1, 77000);
+        SetScore(2, 65000);
+        SetScore(3, 50000);
+        SetScore(4, 40000);
+        SetScore(5, 20000);
+        SetScore(6, 10000);
+        SetScore(7, 8000);
+        SetInitials(0, new char[]{'C','M','K' });
+        SetInitials(1, new char[] { 'J', 'O', 'E' });
+        SetInitials(2, new char[] { 'B', 'A', 'D' });
+        SetInitials(3, new char[] { 'C', 'A', 'T' });
+        SetInitials(4, new char[] { 'M', 'A', 'X' });
+        SetInitials(5, new char[] { 'A', 'A', 'A' });
+        SetInitials(6, new char[] { 'B', 'O', 'O' });
+        SetInitials(7, new char[] { 'W', 'H', 'O' });
+    }
 
 	public float[] scores{
 		get { return Score; }
@@ -47,13 +64,8 @@ public class HighScore {
 	}
 
 	public bool isHighScore(float s){
-		bool In = false;
-		for (int i = 0; i < 10 && !In; i++) {
-			if (s > Score [i]) {
-				In = true;
-			}
-		}
-		return In;
+		//displaying top 8 highscores
+		return s > Score [7];
 	}
 
 	public void Add (char[] name, float s){
@@ -87,6 +99,7 @@ public class HighScore {
 	public static IEnumerator GetFromWebpage(string WebPage, HighScore h){
 		WWW w = new WWW ("http://server.com/file.ext");
 		//wait for result
+        //obsolete
 		yield return w;
 
 		if (w.error != null) {

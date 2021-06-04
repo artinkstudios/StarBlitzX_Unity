@@ -7,7 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class BonusGameManager : MonoBehaviour {
 
-	public GameObject Canvas;
+    public Joystick MobileJoystick;
+    public GameObject Canvas;
 	public GameObject EndScreen;
 	public GameObject PauseMenu;
 	public GameObject EndScore;
@@ -17,12 +18,17 @@ public class BonusGameManager : MonoBehaviour {
 	public GameObject PerfectText;
 	public Button ExitAfterPlay;
 	private int DefaultScoreSize;
+	public GameObject HighScoreOption;
+	public InputField Initials;
+    public Fade FadeScript;
+    public GameObject LoadScreen;
 
 	private float keyboardx;
 	private float keyboardy;
 	private float KeyboardSpeed = 5;
 	private float screenWidth;
 	private float screenHeight;
+	private bool madeHighScore = false;
 
 	public Image Player;
 	//public Image Lazer;
@@ -64,10 +70,18 @@ public class BonusGameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		keyboardx += Input.GetAxis ("Horizontal") * KeyboardSpeed;
-		if (Input.GetAxis ("Horizontal") != 0 || Input.GetAxis ("Vertical") != 0) {
+        float newInput;
+#if UNITY_STANDALONE
+        newInput = Input.GetAxis("Horizontal");
+#endif
+#if UNITY_ANDROID || UNITY_IOS
+        newInput = MobileJoystick.Horizontal * 1.5f;
+#endif
+
+        keyboardx += newInput * KeyboardSpeed;
+		/*if (newInput != 0) {
 			Player.GetComponent<Animator> ().Play ("God-Hammer-Animation-Moving");
-		}
+		}*/
 
 		if (keyboardx < 0-(screenWidth/2)+(PlayerWidth/2)) {
 			keyboardx = 0-(screenWidth/2)+(PlayerWidth/2);
@@ -98,14 +112,16 @@ public class BonusGameManager : MonoBehaviour {
 			//pause game
 			Pause();
 		}
-		if (Input.GetButtonDown("Fire1") || Input.GetButtonDown("Jump")) {
+		if (Input.GetButtonDown("Jump")) {
 			Fire ();
 		}
 	}
+    void OnGUI()
+    { }
 
 
-	private void Fire (){
-		GameObject b = Instantiate (Bullet, Player.transform.position, Player.transform.rotation, Background.transform);
+    public void Fire (){
+        GameObject b = Instantiate (Bullet, Player.transform.position, Player.transform.rotation, Background.transform);
 		b.GetComponent<Image> ().transform.localPosition = new Vector3(keyboardx, keyboardy + PlayerHeight, 0);
 		LaserFire.Play ();
 	}
@@ -186,11 +202,23 @@ public class BonusGameManager : MonoBehaviour {
 
 	public void LoadNextLevel(){
 		ApplicationValues.Part++;
-		//load level
-		SceneManager.LoadScene ("hud");
+        LoadScreen.SetActive(true);
+        //load level
+        AsyncOperation async = SceneManager.LoadSceneAsync("hud");
 	}
 
 	public void MainMenu(){
+		if (madeHighScore) {
+			char[] init = (Initials.text + "   ").ToCharArray();
+			for (int i = 0; i < 3; i++) {
+				if (!char.IsLetterOrDigit(init[i])){
+					init [i] = ' ';
+				}
+			}
+			ApplicationValues.ScoreFile.Add (init, ApplicationValues.Score);
+			HighScore.SaveData (ApplicationValues.FileName, ApplicationValues.ScoreFile);
+		}
+
 		SceneManager.LoadScene ("MainMenu");
 		//Application.Quit();
 	}
@@ -200,13 +228,15 @@ public class BonusGameManager : MonoBehaviour {
 			Time.timeScale = 1;
 			LaserFire.PlayOneShot (UnPauseS);
 			paused = false;
-			Background.GetComponent<AudioSource> ().Play ();
+            Cursor.visible = false;
+            Background.GetComponent<AudioSource> ().Play ();
 			PauseMenu.SetActive (false);
 		} else {
 			Time.timeScale = 0;
 			LaserFire.PlayOneShot (PauseS);
 			paused = true;
-			Background.GetComponent<AudioSource> ().Pause ();
+            Cursor.visible = true;
+            Background.GetComponent<AudioSource> ().Pause ();
 			PauseMenu.SetActive (true);
 		}
 	}
@@ -216,11 +246,18 @@ public class BonusGameManager : MonoBehaviour {
 	private IEnumerator FadeEnd(){
 		yield return new WaitForSeconds(2);
 		ShipsText.SetActive (true);
-		yield return new WaitForSeconds(3);
-		if (PerfectRun) {
+		yield return new WaitForSeconds(2);
+        EndScore.SetActive(true);
+        yield return new WaitForSeconds(3);
+        if (PerfectRun) {
 			PerfectText.SetActive (true);
 			yield return new WaitForSeconds (3);
 		}
+
+        FadeScript.FadeScreenToBlack();
+        yield return new WaitForSeconds(1.5f);
+        LoadNextLevel();
+        /*
 		FadeOut = true;
 		yield return new WaitUntil (FOF);
 		Renderer[] r = EndScreen.GetComponentsInChildren<Renderer>();
@@ -245,7 +282,15 @@ public class BonusGameManager : MonoBehaviour {
 		EndScreen.SetActive (true);
 		FadeIn = true;
 		yield return new WaitUntil (FIF);
-		UnityEngine.Cursor.visible = true;
+		UnityEngine.Cursor.visible = true;*/
+	}
+
+	public void HighScoreDisplay(){
+		if (ApplicationValues.ScoreFile.isHighScore (ApplicationValues.Score)) {
+			//display initials input
+			HighScoreOption.SetActive(true);
+			madeHighScore = true;
+		}
 	}
 
 	public void GameOver(){
@@ -253,21 +298,22 @@ public class BonusGameManager : MonoBehaviour {
 		if (BonusScore / 500 == TotalEnemiesSpawned) {
 			PerfectRun = true;
 		}
-		if (!ApplicationValues.demo && PerfectRun) {
+		if (PerfectRun) {
 			PerfectText.SetActive (true);
 			ApplicationValues.FreeContinue++;
 		}
-		if (ApplicationValues.demo) {
+		/*if (ApplicationValues.demo) {
 			EndScore.GetComponent<Text>().text = "Your Score: "+ApplicationValues.Score;
 			ShipsText.GetComponent<Text> ().text = "Ships Destroyed: "+(BonusScore/500);
 			ExitAfterPlay.GetComponent< Text> ().text = "Main Menu";
 			ExitAfterPlay.onClick.AddListener (MainMenu);
-		} else {
+			HighScoreDisplay ();
+		} else {*/
 			EndScore.GetComponent<Text>().text = "Bonus Score Earned: "+BonusScore;
 			ShipsText.GetComponent<Text> ().text = "Ships Destroyed: " + (BonusScore / 500);
 			ExitAfterPlay.GetComponent<Text> ().text = "Continue";
 			ExitAfterPlay.onClick.AddListener (LoadNextLevel);
-		}
+		//}
 		StartCoroutine (FadeEnd ());
 	}
 }

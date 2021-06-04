@@ -16,7 +16,7 @@ public class WaitKeyDown : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (!ApplicationValues.FirstPlay && Input.anyKeyDown) {
+		if (Input.anyKeyDown) {
 			StopCoroutine (VideoTime ());
 			SendMessage ();
 		}

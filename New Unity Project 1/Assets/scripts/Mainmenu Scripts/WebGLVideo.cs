@@ -25,7 +25,7 @@ public class WebGLVideo : MonoBehaviour {
 			} else {
 				player.Play ();
 			}
-			Debug.Log ("now playing "+clip.name);
+			//Debug.Log ("now playing "+clip.name);
 		} else {
 			Debug.Log ("issue getting video");
 		}
