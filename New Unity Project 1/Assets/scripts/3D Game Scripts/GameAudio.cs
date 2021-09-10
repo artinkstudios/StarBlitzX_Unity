@@ -11,9 +11,18 @@ public class GameAudio : MonoBehaviour {
 	public AudioClip UnPause;
 	public AudioClip LaserFire;
 	public AudioClip EarthDestroyed;
+    public AudioClip IronAsteroidPing;
+    public AudioClip FireHit;
+    public AudioClip LowAccuracy;
+    public AudioClip MedAccuracy;
+    public AudioClip HighAccuracy;
+    public AudioClip AnnouncerA;
+    public AudioClip AnnouncerB;
+    private AudioClip CurrentAnnouncer;
 
 	void Start () {
 		AudioPlayBack = GetComponent<AudioSource> ();
+        CurrentAnnouncer = AnnouncerA;
 	}
 
 	public void PlayAlert(){
@@ -34,4 +43,46 @@ public class GameAudio : MonoBehaviour {
 	public void PlayEarthDestroyed(){
 		AudioPlayBack.PlayOneShot (EarthDestroyed);
 	}
+
+    public void PlayIronPing()
+    {
+        AudioPlayBack.PlayOneShot(IronAsteroidPing);
+    }
+
+    public void PlayHitFire()
+    {
+        AudioPlayBack.PlayOneShot(FireHit);
+    }
+
+    public void PlayLowAccuracy()
+    {
+        AudioPlayBack.PlayOneShot(LowAccuracy);
+    }
+    public void PlayMedAccuracy()
+    {
+        AudioPlayBack.PlayOneShot(MedAccuracy);
+    }
+    public void PlayHighAccuracy()
+    {
+        AudioPlayBack.PlayOneShot(HighAccuracy);
+    }
+    public void StopPlayback()
+    {
+        AudioPlayBack.Stop();
+    }
+
+    public void PlayAnnouncerMessage()
+    {
+        AudioPlayBack.PlayOneShot(CurrentAnnouncer);
+    }
+    public void SwitchAnnouncer()
+    {
+        if (CurrentAnnouncer.Equals(AnnouncerA))
+        {
+            CurrentAnnouncer = AnnouncerB;
+        } else
+        {
+            CurrentAnnouncer = AnnouncerA;
+        }
+    }
 }

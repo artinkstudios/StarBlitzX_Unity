@@ -6,8 +6,9 @@ using UnityEngine.UI;
 public class GameMusic : MonoBehaviour {
 
 	public GameObject MusicNameText;
-	private float MusicTextPos;
-	private float MovePos;
+    public Sprite[] MusicTitle;
+	//private float MusicTextPos;
+	//private float MovePos;
 	private bool MovingText = false;
 	private bool iswaiting = false;
 	private AudioSource AudioPlayBack;
@@ -19,8 +20,8 @@ public class GameMusic : MonoBehaviour {
 	private int NextClip;
 
 	void Start () {
-		MusicTextPos = MusicNameText.transform.position.y;
-		MusicNameText.transform.position = new Vector3 (MusicNameText.transform.position.x, MusicTextPos * -2, MusicNameText.transform.position.z);
+		//MusicTextPos = MusicNameText.transform.position.y;
+		//MusicNameText.transform.position = new Vector3 (MusicNameText.transform.position.x, MusicTextPos * -2, MusicNameText.transform.position.z);
 		PauseTime = 0;
 		AudioPlayBack = GetComponent<AudioSource> ();
 		NextClip = 0;
@@ -30,39 +31,27 @@ public class GameMusic : MonoBehaviour {
 		if (MovingText) {
 			MoveText ();
 		}
-		//if at top start scolling
-		//MusicNameText.GetComponentInChildren<Text>().text.Substring(Scroll, sizeof);
-		//increase scroll while scroll+size<text.length
-		//stop when off screen
 	}
 
 	private void MoveText(){
-		MusicNameText.transform.position = new Vector3 (MusicNameText.transform.position.x, MusicNameText.transform.position.y + MovePos, MusicNameText.transform.position.z);
-		if (MusicNameText.transform.position.y >= MusicTextPos) {
-			MovingText = false;
-			StartCoroutine (WaitToMove ());
-		} else if (MusicNameText.transform.position.y <= MusicTextPos * -2) {
-			MovingText = false;
-		}
+        //MusicNameText.transform.position = new Vector3 (MusicNameText.transform.position.x, MusicNameText.transform.position.y + MovePos, MusicNameText.transform.position.z);
+        Color co = MusicNameText.GetComponent<Image>().color;
+        co.a = Mathf.Max(co.a - 0.02f, 0);
+        MusicNameText.GetComponent<Image>().color = co;
+
+
+        if (co.a <= 0)
+        {
+            MovingText = false;
+        }
 	}
 	private IEnumerator WaitToMove(){
 		iswaiting = true;
-		yield return new WaitForSeconds (2);
+		yield return new WaitForSeconds (3);
 		iswaiting = false;
-		MoveMusicTitle ();
-	}
-	public void MoveMusicTitle(){
-		MovingText = true;
-		if (MusicNameText.transform.position.y >= MusicTextPos && iswaiting) {
-			MovingText = false;
-			StopAllCoroutines ();
-			StartCoroutine (WaitToMove ());
-		} else if (MusicNameText.transform.position.y >= MusicTextPos) {
-			MovePos = -2;
-		} else {
-			MovePos = 2;
-		}
-	}
+        MovingText = true;
+    }
+	
 
 	public void PausePlayback(){
 		PauseTime = AudioPlayBack.time;
@@ -97,8 +86,7 @@ public class GameMusic : MonoBehaviour {
 	}
 
 	public void PlayMusicInOrder(){
-		//MusicNameText.GetComponentInChildren<Text> ().text.Substring (0, 12);
-		MusicNameText.GetComponentInChildren<Text>().text = Music [NextClip].name;
+        MusicNameText.GetComponent<Image>().sprite = MusicTitle[NextClip];
 		AudioPlayBack.clip = Music [NextClip];
 		AudioPlayBack.loop = true;
 		AudioPlayBack.time = PauseTime;
@@ -106,12 +94,11 @@ public class GameMusic : MonoBehaviour {
 		//Invoke ("PlayMusicInOrder", Music [NextClip].length - PauseTime);
 
 		PauseTime = 0;
-		/*NextClip++;
-		if (NextClip >= Music.Length) {
-			NextClip = 0;
-		}*/
-		//MoveMusicTitle ();
-	}
+        Color co = MusicNameText.GetComponent<Image>().color;
+        co.a = 1;
+        MusicNameText.GetComponent<Image>().color = co;
+        StartCoroutine(WaitToMove());
+    }
 
 
 	public void RotateMusic(){
@@ -123,7 +110,5 @@ public class GameMusic : MonoBehaviour {
 			NextClip = 0;
 		}
 		PlayMusicInOrder ();
-
-		//MoveMusicTitle ();
 	}
 }

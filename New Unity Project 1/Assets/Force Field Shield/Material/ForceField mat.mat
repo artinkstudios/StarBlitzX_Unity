@@ -1,0 +1,121 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ForceField mat
+  m_Shader: {fileID: 4800000, guid: 8a080a75b69c2d94495ee2e5e0400378, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DistortionTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 4e65c835cbb248740900c29b58382803, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _BumpScale: 1
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _Distance: 0.01
+    - _DstBlend: 0
+    - _EffectTime: 500
+    - _FresnelPower: 5
+    - _FresnelScale: 1
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _ImpactRingRefraction: 1
+    - _ImpactSize: 0.5
+    - _MaskRadius: 0
+    - _MaskSmooth: 0
+    - _MaxDistance: 19.78
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _RefractionAmount: 0.1
+    - _RemainingTime0: 0
+    - _RemainingTime1: 0
+    - _RemainingTime2: 0
+    - _RemainingTime3: 0
+    - _RemainingTime4: 0
+    - _RemainingTime5: 0
+    - _RemainingTime6: 0
+    - _RemainingTime7: 0
+    - _RemainingTime8: 0
+    - _RemainingTime9: 0
+    - _RimIntensity: 4.95
+    - _RimPower: 3.5
+    - _ShieldHP: 1
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _Speed: 1
+    - _SrcBlend: 1
+    - _Strength: 0
+    - _UVSec: 0
+    - _ZWrite: 1
+    m_Colors:
+    - _CollisionColor: {r: 0.44459772, g: 0.7750597, b: 0.9716981, a: 1}
+    - _Color: {r: 0.060074754, g: 0.34466898, b: 0.509434, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _PointColor: {r: 1, g: 0, b: 0, a: 1}
+    - _Position0: {r: -1, g: -1, b: -1, a: -1}
+    - _Position1: {r: -1, g: -1, b: -1, a: -1}
+    - _Position2: {r: -1, g: -1, b: -1, a: -1}
+    - _Position3: {r: -1, g: -1, b: -1, a: -1}
+    - _Position4: {r: -1, g: -1, b: -1, a: -1}
+    - _Position5: {r: -1, g: -1, b: -1, a: -1}
+    - _Position6: {r: -1, g: -1, b: -1, a: -1}
+    - _Position7: {r: -1, g: -1, b: -1, a: -1}
+    - _Position8: {r: -1, g: -1, b: -1, a: -1}
+    - _Position9: {r: -1, g: -1, b: -1, a: -1}
+    - _RimColor: {r: 0.049172327, g: 0.4316, b: 0.8018868, a: 0.3882353}
+    - _ShieldColor: {r: 0.68490565, g: 0.69175565, b: 1, a: 0}
+  m_BuildTextureStacks: []
